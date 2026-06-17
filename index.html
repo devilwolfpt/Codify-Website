@@ -21,8 +21,8 @@
 <link href="phosphor/bold/style.css" rel="stylesheet">
 <link href="phosphor/fill/style.css" rel="stylesheet">
 <style>
-*{box-sizing:border-box;}
-body{font-family:'Plus Jakarta Sans',sans-serif;margin:0;background:#050507;color:white;overflow-x:hidden;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{overflow-x:hidden;}body{font-family:'Plus Jakarta Sans',sans-serif;margin:0;background:#050507;color:white;overflow-x:hidden;}
 html:not(.dark) body{background:#f8fafc;color:#0f172a;}
 .sc::-webkit-scrollbar{width:4px;height:4px;}
 .sc::-webkit-scrollbar-thumb{background:#3f3f46;border-radius:999px;}
@@ -74,14 +74,20 @@ main{position:relative;z-index:10;}
 .carousel-wrap{position:relative;overflow:hidden;width:100%;}
 .carousel-track{display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform;}
 .carousel-slide{flex:0 0 74%;max-width:74%;padding:0 12px;transition:all .6s cubic-bezier(.4,0,.2,1);}
-.carousel-slide img{width:100%;border-radius:24px;border:1px solid #27272a;display:block;object-fit:cover;height:380px;background:#18181b;}
+.carousel-slide img{width:100%;border-radius:24px;border:1px solid #27272a;display:block;object-fit:cover;height:200px;background:#18181b;}
+@media(min-width:768px){.carousel-slide img{height:380px;}}
 .dark .carousel-slide img{box-shadow:0 32px 80px rgba(0,0,0,.6);}
 html:not(.dark) .carousel-slide img{border-color:#e4e4e7;box-shadow:0 32px 80px rgba(0,0,0,.12);}
 .carousel-slide.active img{border-color:#7c3aed80;}
 .carousel-slide.side{opacity:.35;transform:scale(.94);filter:blur(1px);}
 .carousel-slide.active{opacity:1;transform:scale(1);filter:blur(0);}
 .carousel-dots{display:flex;justify-content:center;gap:8px;margin-top:28px;}
-.carousel-dot{width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;transition:all .4s;padding:0;}
+.carousel-dot{width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;transition:all .4s;padding:0;display:flex;align-items:center;justify-content:center;background:transparent;position:relative;}
+.dark .carousel-dot{background:transparent;}
+.carousel-dot span{width:8px;height:8px;border-radius:50%;display:block;transition:all .4s;}
+.dark .carousel-dot span{background:#3f3f46;}
+html:not(.dark) .carousel-dot span{background:#d4d4d8;}
+.carousel-dot.active span{background:#7c3aed !important;width:28px;border-radius:4px;}
 .dark .carousel-dot{background:#3f3f46;}
 html:not(.dark) .carousel-dot{background:#d4d4d8;}
 .carousel-dot.active{background:#7c3aed !important;width:28px;border-radius:4px;}
@@ -89,6 +95,8 @@ html:not(.dark) .carousel-dot{background:#d4d4d8;}
 .dark .carousel-btn{background:rgba(255,255,255,0.06);border:1px solid #3f3f46;color:white;}
 html:not(.dark) .carousel-btn{background:rgba(0,0,0,0.05);border:1px solid #d4d4d8;color:#000;}
 .carousel-btn:hover{background:rgba(124,58,237,.3);border-color:#7c3aed;}
+.ide-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+@media(max-width:1023px){.ide-agent{width:100%!important;min-width:320px!important;}.ide-explorer{display:none!important;}.ide-main{min-height:400px!important;height:auto!important;}.ide-sidebar{display:none!important;}}
 .carousel-btn.prev{left:12px;}
 .carousel-btn.next{right:12px;}
 .icon-wave{overflow:hidden;width:100%;padding:60px 0;position:relative;}
@@ -126,6 +134,7 @@ html:not(.dark) .timeline-dot{border-color:#f8fafc;}
 .code-window .titlebar .dot.red{background:#ff5f56;}
 .code-window .titlebar .dot.yellow{background:#ffbd2e;}
 .code-window .titlebar .dot.green{background:#27c93f;}
+@media(min-width:768px){#mobile-menu{display:none!important;}}
 #mouse-glow{position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,0.08) 0%,transparent 70%);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:opacity .3s;}
 .comp-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:20px;overflow:hidden;}
 .dark .comp-table{border:1px solid rgba(255,255,255,0.08);}
@@ -213,24 +222,24 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
   <i class="ph-bold ph-moon text-lg dark:hidden block"></i>
   <i class="ph-bold ph-sun text-lg hidden dark:block"></i>
 </button>
-<button id="menu-toggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-zinc-800 transition-colors text-slate-600 dark:text-zinc-400" aria-label="Menu">
+<button id="menu-toggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-zinc-800 transition-colors text-slate-600 dark:text-zinc-400" aria-label="Menu" style="cursor:pointer;touch-action:manipulation;">
   <i class="ph-bold ph-list text-2xl" id="menu-icon"></i>
 </button>
 </div>
 </nav>
 
+</header>
+
 <!-- Mobile Menu -->
-<div id="mobile-menu" class="md:hidden fixed inset-x-0 top-16 border-b border-transparent dark:border-white/5 bg-white/30 dark:bg-[#050507]/30 backdrop-blur-2xl transition-all duration-300 overflow-hidden" style="max-height:0;opacity:0;">
-<div class="px-6 py-6 flex flex-col gap-5 text-base font-medium">
+<div id="mobile-menu" class="fixed inset-x-0 z-50" style="top:64px;display:none;">
+<div class="px-6 py-6 flex flex-col gap-5 text-base font-medium border-b border-transparent dark:border-white/5 bg-white/30 dark:bg-[#050507]/30 backdrop-blur-2xl">
 <a href="#features" class="text-slate-900 dark:text-zinc-300 hover:text-violet-500 transition mobile-link">Features</a>
 <a href="#ide" class="text-slate-900 dark:text-zinc-300 hover:text-violet-500 transition mobile-link">IDE</a>
-
 <a href="#ai" class="text-slate-900 dark:text-zinc-300 hover:text-violet-500 transition mobile-link">Neuria AI</a>
 <a href="#downloads" class="text-slate-900 dark:text-zinc-300 hover:text-violet-500 transition mobile-link">Downloads</a>
 <a href="#blog" class="text-slate-900 dark:text-zinc-300 hover:text-violet-500 transition mobile-link">Blog</a>
 </div>
 </div>
-</header>
 
 <main>
 
@@ -278,7 +287,7 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
     </div>
   </div>
 </section>
-<section class="pt-16 pb-40 border-t border-slate-200 dark:border-zinc-900 relative">
+<section class="pt-16 pb-40 border-t border-slate-200 dark:border-zinc-900 relative overflow-hidden marquee-section">
   <div class="absolute inset-0 pointer-events-none hidden dark:block" style="background:radial-gradient(ellipse 160% 120% at 50% 0%,rgba(100,200,255,0.6) 0%,rgba(60,140,255,0.3) 30%,rgba(40,100,250,0.12) 55%,rgba(20,60,230,0.05) 75%,transparent 90%);filter:blur(30px);"></div>
   <div class="absolute inset-0 pointer-events-none dark:hidden" style="background:radial-gradient(ellipse 160% 120% at 50% 0%,rgba(0,80,200,0.55) 0%,rgba(0,50,160,0.35) 30%,rgba(0,30,120,0.18) 55%,transparent 80%);filter:blur(15px);"></div>
   <p class="text-center text-sm font-semibold tracking-widest uppercase text-zinc-500 mb-8">Desenvolvido em plataformas:</p>
@@ -319,11 +328,11 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
       </div>
     </div>
     <div class="carousel-dots">
-      <button class="carousel-dot" id="dot-0" onclick="goToSlide(0)"></button>
-      <button class="carousel-dot active" id="dot-1" onclick="goToSlide(1)"></button>
-      <button class="carousel-dot" id="dot-2" onclick="goToSlide(2)"></button>
-      <button class="carousel-dot" id="dot-3" onclick="goToSlide(3)"></button>
-      <button class="carousel-dot" id="dot-4" onclick="goToSlide(4)"></button>
+      <button class="carousel-dot" id="dot-0" onclick="goToSlide(0)"><span></span></button>
+      <button class="carousel-dot active" id="dot-1" onclick="goToSlide(1)"><span></span></button>
+      <button class="carousel-dot" id="dot-2" onclick="goToSlide(2)"><span></span></button>
+      <button class="carousel-dot" id="dot-3" onclick="goToSlide(3)"><span></span></button>
+      <button class="carousel-dot" id="dot-4" onclick="goToSlide(4)"><span></span></button>
     </div>
   </div>
 </div>
@@ -375,7 +384,7 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
           <p id="featuredDesc" class="text-slate-500 dark:text-zinc-400 leading-relaxed max-w-lg"></p>
         </div>
       </div>
-      <div class="grid grid-cols-2 gap-3 w-full lg:w-[380px] shrink-0" id="featureThumbs"></div>
+      <div class="grid grid-cols-2 gap-2 sm:gap-3 w-full lg:w-[380px] shrink-0" id="featureThumbs"></div>
     </div>
     <div class="mt-12 reveal rounded-3xl overflow-hidden border border-slate-200 dark:border-zinc-800">
       <img src="Open%20Source%20banner/Open%20Source%20banner%20Low.png" alt="Open Source" class="w-full h-auto">
@@ -517,6 +526,7 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
 </div>
 
 <div class="rounded-3xl overflow-hidden border border-slate-300 dark:border-zinc-800 shadow-2xl reveal" style="background:#111113;">
+  <div class="ide-wrap">
   <div style="height:48px;background:#0d0d10;border-bottom:1px solid #27272a;display:flex;align-items:center;justify-content:space-between;padding:0 20px;">
     <div style="display:flex;align-items:center;gap:10px;">
       <div style="width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#7c3aed,#3b82f6);display:flex;align-items:center;justify-content:center;"><i class="ph-fill ph-code" style="color:white;font-size:13px;"></i></div>
@@ -534,8 +544,8 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
       <button style="background:none;border:none;color:#71717a;cursor:pointer;width:32px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.background='#cc0000';this.style.color='white'" onmouseout="this.style.background='none';this.style.color='#71717a'"><i class="ph-bold ph-x" style="font-size:13px;"></i></button>
     </div>
   </div>
-  <div style="display:flex;height:680px;">
-    <div style="width:48px;background:#0d0d10;border-right:1px solid #27272a;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:18px;flex-shrink:0;">
+  <div class="ide-main" style="display:flex;height:680px;">
+    <div class="ide-sidebar" style="width:48px;background:#0d0d10;border-right:1px solid #27272a;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:18px;flex-shrink:0;">
       <div style="width:36px;height:36px;border-radius:10px;background:rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;"><i class="ph-fill ph-squares-four" style="color:#a78bfa;font-size:18px;"></i></div>
       <i class="ph-bold ph-user-circle" style="color:#52525b;font-size:20px;cursor:pointer;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#52525b'"></i>
       <i class="ph-bold ph-clock-counter-clockwise" style="color:#52525b;font-size:20px;cursor:pointer;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#52525b'"></i>
@@ -547,7 +557,7 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
       <div style="flex:1;"></div>
       <i class="ph-bold ph-plus" style="color:#52525b;font-size:20px;cursor:pointer;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#52525b'"></i>
     </div>
-    <div style="width:520px;background:#13131a;border-right:1px solid #27272a;display:flex;flex-direction:column;flex-shrink:0;">
+    <div class="ide-agent" style="width:520px;background:#13131a;border-right:1px solid #27272a;display:flex;flex-direction:column;flex-shrink:0;">
       <div style="padding:14px 18px;border-bottom:1px solid #27272a;display:flex;align-items:center;justify-content:space-between;">
         <div style="display:flex;align-items:center;gap:10px;">
           <div style="width:32px;height:32px;border-radius:10px;background:rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;"><i class="ph-fill ph-squares-four" style="color:#a78bfa;font-size:16px;"></i></div>
@@ -607,7 +617,7 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
     <span style="color:#dcdcaa;">jogar</span>()</div>
       </div>
     </div>
-    <div style="width:240px;background:#18181d;border-left:1px solid #27272a;display:flex;flex-direction:column;flex-shrink:0;">
+    <div class="ide-explorer" style="width:240px;background:#18181d;border-left:1px solid #27272a;display:flex;flex-direction:column;flex-shrink:0;">
       <div style="height:40px;border-bottom:1px solid #27272a;display:flex;align-items:center;justify-content:space-between;padding:0 12px;">
         <span style="font-size:11px;letter-spacing:.08em;color:#52525b;font-weight:700;text-transform:uppercase;">Explorador</span>
         <div style="display:flex;gap:4px;">
@@ -630,7 +640,7 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
 </section>
 <section class="py-32 border-t border-slate-200 dark:border-zinc-900">
 <div class="max-w-7xl mx-auto px-6">
-<div class="grid lg:grid-cols-2 gap-16 items-center">
+<div class="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
 <div class="reveal">
 <h2 class="text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">Terminal Poderoso</h2>
 <p class="text-slate-500 dark:text-zinc-400 text-lg leading-relaxed mb-6">Terminal integrado com suporte a múltiplos processos, divisão de painéis e comandos com IA.</p>
@@ -661,7 +671,7 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
 
 <section class="py-32 border-t border-slate-200 dark:border-zinc-900">
 <div class="max-w-7xl mx-auto px-6">
-<div class="grid lg:grid-cols-2 gap-16 items-center">
+<div class="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
 <div class="order-2 lg:order-1 code-window reveal" style="transition-delay:100ms">
 <div class="titlebar">
 <div style="display:flex;gap:6px;"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
@@ -690,7 +700,7 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
 
 <section id="performance" class="py-32 border-t border-slate-200 dark:border-zinc-900">
 <div class="max-w-7xl mx-auto px-6">
-<div class="grid lg:grid-cols-2 gap-16 items-center">
+<div class="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
 <div class="reveal">
 <h2 class="text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">Performance de Outro Nível</h2>
 <p class="text-slate-500 dark:text-zinc-400 text-lg leading-relaxed mb-8">Criado para trabalhar com projetos enormes sem comprometer a fluidez.</p>
@@ -804,7 +814,7 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
 </div>
 <section id="ai" class="py-32 border-t border-slate-200 dark:border-zinc-900">
 <div class="max-w-7xl mx-auto px-6">
-<div class="grid lg:grid-cols-2 gap-16 items-center">
+<div class="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
 <div class="rounded-3xl overflow-hidden border border-slate-200 dark:border-zinc-800 order-2 lg:order-1 reveal">
 <img src="https://media.giphy.com/media/f3iwJFOVOwuy7K6FFw/giphy.gif" class="w-full h-full object-cover" style="background:#18181b;">
 </div>
@@ -814,11 +824,11 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
 </div>
 <h2 class="text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">IA Local e Poderosa</h2>
 <p class="text-slate-500 dark:text-zinc-400 text-lg leading-relaxed mb-8">IA desenhada para desenvolvimento avançado, debugging inteligente e automação completa. Tudo local.</p>
-<div class="grid grid-cols-2 gap-6">
-<div class="glass border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 card-hover"><i class="ph-fill ph-lock-key text-3xl text-violet-500 mb-3"></i><h4 class="font-bold text-lg mb-2 text-slate-900 dark:text-white">100% Seguro</h4><p class="text-slate-500 dark:text-zinc-400 text-sm">Processado localmente</p></div>
-<div class="glass border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 card-hover"><i class="ph-fill ph-lightning text-3xl text-blue-500 mb-3"></i><h4 class="font-bold text-lg mb-2 text-slate-900 dark:text-white">Instantâneo</h4><p class="text-slate-500 dark:text-zinc-400 text-sm">Respostas em ms</p></div>
-<div class="glass border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 card-hover"><i class="ph-fill ph-git-pull-request text-3xl text-emerald-500 mb-3"></i><h4 class="font-bold text-lg mb-2 text-slate-900 dark:text-white">Auto-Complete</h4><p class="text-slate-500 dark:text-zinc-400 text-sm">Código preditivo</p></div>
-<div class="glass border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 card-hover"><i class="ph-fill ph-bug-beetle text-3xl text-rose-500 mb-3"></i><h4 class="font-bold text-lg mb-2 text-slate-900 dark:text-white">Debug Automático</h4><p class="text-slate-500 dark:text-zinc-400 text-sm">Encontra bugs</p></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
+<div class="glass border border-slate-200 dark:border-zinc-800 rounded-2xl p-4 sm:p-6 card-hover"><i class="ph-fill ph-lock-key text-2xl sm:text-3xl text-violet-500 mb-2 sm:mb-3"></i><h4 class="font-bold text-base sm:text-lg mb-1 sm:mb-2 text-slate-900 dark:text-white">100% Seguro</h4><p class="text-slate-500 dark:text-zinc-400 text-sm">Processado localmente</p></div>
+<div class="glass border border-slate-200 dark:border-zinc-800 rounded-2xl p-4 sm:p-6 card-hover"><i class="ph-fill ph-lightning text-2xl sm:text-3xl text-blue-500 mb-2 sm:mb-3"></i><h4 class="font-bold text-base sm:text-lg mb-1 sm:mb-2 text-slate-900 dark:text-white">Instantâneo</h4><p class="text-slate-500 dark:text-zinc-400 text-sm">Respostas em ms</p></div>
+<div class="glass border border-slate-200 dark:border-zinc-800 rounded-2xl p-4 sm:p-6 card-hover"><i class="ph-fill ph-git-pull-request text-2xl sm:text-3xl text-emerald-500 mb-2 sm:mb-3"></i><h4 class="font-bold text-base sm:text-lg mb-1 sm:mb-2 text-slate-900 dark:text-white">Auto-Complete</h4><p class="text-slate-500 dark:text-zinc-400 text-sm">Código preditivo</p></div>
+<div class="glass border border-slate-200 dark:border-zinc-800 rounded-2xl p-4 sm:p-6 card-hover"><i class="ph-fill ph-bug-beetle text-2xl sm:text-3xl text-rose-500 mb-2 sm:mb-3"></i><h4 class="font-bold text-base sm:text-lg mb-1 sm:mb-2 text-slate-900 dark:text-white">Debug Automático</h4><p class="text-slate-500 dark:text-zinc-400 text-sm">Encontra bugs</p></div>
 </div>
 </div>
 </div>
@@ -936,22 +946,22 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
 <p class="text-slate-500 dark:text-zinc-400 text-lg mb-16">Windows, macOS e Linux.</p>
 </div>
 <div class="grid md:grid-cols-3 gap-8">
-<div class="glass border border-slate-200 dark:border-zinc-800 rounded-3xl p-10 card-hover text-center reveal float-slow">
-<i class="ph-fill ph-windows-logo text-6xl mb-6 text-slate-900 dark:text-white"></i>
-<h3 class="font-bold text-2xl mb-3 text-slate-900 dark:text-white">Windows</h3>
-<p class="text-slate-500 dark:text-zinc-500 mb-8">x64 / ARM64</p>
+<div class="glass border border-slate-200 dark:border-zinc-800 rounded-3xl p-6 md:p-10 card-hover text-center reveal float-slow">
+<i class="ph-fill ph-windows-logo text-5xl md:text-6xl mb-4 md:mb-6 text-slate-900 dark:text-white"></i>
+<h3 class="font-bold text-xl md:text-2xl mb-2 md:mb-3 text-slate-900 dark:text-white">Windows</h3>
+<p class="text-slate-500 dark:text-zinc-500 mb-6 md:mb-8">x64 / ARM64</p>
 <a href="https://github.com/devilwolfpt/codify-ide/releases/download/Codify/Codify.Setup.0.1.exe" class="w-full block py-4 rounded-2xl bg-violet-600 text-white font-bold hover:bg-violet-500 transition">Download</a>
 </div>
-<div class="glass border border-slate-200 dark:border-zinc-800 rounded-3xl p-10 card-hover text-center reveal float-anim" style="transition-delay:100ms">
-<i class="ph-fill ph-apple-logo text-6xl mb-6 text-slate-900 dark:text-white"></i>
-<h3 class="font-bold text-2xl mb-3 text-slate-900 dark:text-white">macOS</h3>
-<p class="text-slate-500 dark:text-zinc-500 mb-8">Apple Silicon</p>
+<div class="glass border border-slate-200 dark:border-zinc-800 rounded-3xl p-6 md:p-10 card-hover text-center reveal float-anim" style="transition-delay:100ms">
+<i class="ph-fill ph-apple-logo text-5xl md:text-6xl mb-4 md:mb-6 text-slate-900 dark:text-white"></i>
+<h3 class="font-bold text-xl md:text-2xl mb-2 md:mb-3 text-slate-900 dark:text-white">macOS</h3>
+<p class="text-slate-500 dark:text-zinc-500 mb-6 md:mb-8">Apple Silicon</p>
 <button class="w-full py-4 rounded-2xl border border-slate-300 dark:border-zinc-700 text-slate-600 dark:text-zinc-400 hover:border-violet-500 transition cursor-default">Em breve</button>
 </div>
-<div class="glass border border-slate-200 dark:border-zinc-800 rounded-3xl p-10 card-hover text-center reveal float-delayed" style="transition-delay:200ms">
-<i class="ph-fill ph-linux-logo text-6xl mb-6 text-slate-900 dark:text-white"></i>
-<h3 class="font-bold text-2xl mb-3 text-slate-900 dark:text-white">Linux</h3>
-<p class="text-slate-500 dark:text-zinc-500 mb-8">.deb / AppImage</p>
+<div class="glass border border-slate-200 dark:border-zinc-800 rounded-3xl p-6 md:p-10 card-hover text-center reveal float-delayed" style="transition-delay:200ms">
+<i class="ph-fill ph-linux-logo text-5xl md:text-6xl mb-4 md:mb-6 text-slate-900 dark:text-white"></i>
+<h3 class="font-bold text-xl md:text-2xl mb-2 md:mb-3 text-slate-900 dark:text-white">Linux</h3>
+<p class="text-slate-500 dark:text-zinc-500 mb-6 md:mb-8">.deb / AppImage</p>
 <button class="w-full py-4 rounded-2xl border border-slate-300 dark:border-zinc-700 text-slate-600 dark:text-zinc-400 hover:border-violet-500 transition cursor-default">Em breve</button>
 </div>
 </div>
@@ -1035,21 +1045,18 @@ html:not(.dark) .terminal-output{color:rgba(0,0,0,0.5);}
   const icon = document.getElementById('menu-icon');
   if (!menuBtn || !menu) return;
   menuBtn.addEventListener('click', function() {
-    var open = menu.style.maxHeight !== '0px' && menu.style.maxHeight !== '';
-    if (open) {
-      menu.style.maxHeight = '0';
-      menu.style.opacity = '0';
-      if (icon) icon.className = 'ph-bold ph-list text-2xl';
+    var isOpen = menu.style.display !== 'none' && menu.style.display !== '';
+    if (isOpen) {
+      menu.style.display = 'none';
+      icon.className = 'ph-bold ph-list text-2xl';
     } else {
-      menu.style.maxHeight = menu.scrollHeight + 'px';
-      menu.style.opacity = '1';
-      if (icon) icon.className = 'ph-bold ph-x text-2xl';
+      menu.style.display = 'block';
+      icon.className = 'ph-bold ph-x text-2xl';
     }
   });
   document.querySelectorAll('.mobile-link').forEach(function(link) {
     link.addEventListener('click', function() {
-      menu.style.maxHeight = '0';
-      menu.style.opacity = '0';
+      menu.style.display = 'none';
       if (icon) icon.className = 'ph-bold ph-list text-2xl';
     });
   });
@@ -1169,6 +1176,12 @@ themeBtns.forEach(function(btn) {
     });
     el.addEventListener('mouseleave', function() {
       this.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) translateY(0px)';
+    });
+    el.addEventListener('touchend', function() {
+      this.style.transform = '';
+    });
+    el.addEventListener('touchcancel', function() {
+      this.style.transform = '';
     });
   });
 })();
