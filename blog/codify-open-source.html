@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-PT" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Codify é agora Open Source — Codify IDE</title>
+<script src="../tailwind.min.js"></script>
+<script>
+  tailwind.config = { darkMode: 'class' }
+</script>
+<script>
+  if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="../phosphor/regular/style.css" rel="stylesheet">
+<link href="../phosphor/bold/style.css" rel="stylesheet">
+<link href="../phosphor/fill/style.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;margin:0;background:#050507;color:white;overflow-x:hidden;}
+html:not(.dark) body{background:#f8fafc;color:#0f172a;}
+.sc::-webkit-scrollbar{width:4px;height:4px;}
+.sc::-webkit-scrollbar-thumb{background:#3f3f46;border-radius:999px;}
+.gradient-text{background:linear-gradient(135deg,#7c3aed,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.glass{backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);}
+.dark .glass{background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.08);}
+html:not(.dark) .glass{background:rgba(0,0,0,0.02);border-color:rgba(0,0,0,0.06);}
+.reveal{opacity:0;transform:translateY(40px);transition:all 0.9s cubic-bezier(0.5,0,0,1);}
+.reveal.active{opacity:1;transform:translateY(0);}
+#mouse-glow{position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,0.08) 0%,transparent 70%);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:opacity .3s;}
+#back-to-top{position:fixed;bottom:24px;right:24px;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:50;cursor:pointer;opacity:0;transform:translateY(20px);transition:all .4s cubic-bezier(.4,0,.2,1);pointer-events:none;}
+#back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:auto;}
+.dark #back-to-top{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:white;}
+html:not(.dark) #back-to-top{background:rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.1);color:black;}
+#back-to-top:hover{background:#7c3aed;color:white;border-color:#7c3aed;transform:translateY(-4px);}
+.mono{font-family:'JetBrains Mono',monospace;}
+.post-content h2{font-size:1.75rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;color:inherit;}
+.post-content h3{font-size:1.25rem;font-weight:600;margin-top:2rem;margin-bottom:0.75rem;color:inherit;}
+.post-content p{line-height:1.8;margin-bottom:1.25rem;}
+.dark .post-content p{color:rgba(255,255,255,0.75);}
+html:not(.dark) .post-content p{color:rgba(0,0,0,0.7);}
+.post-content ul,.post-content ol{padding-left:1.5rem;margin-bottom:1.25rem;line-height:1.8;}
+.dark .post-content ul,.dark .post-content ol{color:rgba(255,255,255,0.75);}
+html:not(.dark) .post-content ul,html:not(.dark) .post-content ol{color:rgba(0,0,0,0.7);}
+.post-content li{margin-bottom:0.5rem;}
+.post-content strong{color:inherit;font-weight:700;}
+.post-content code{font-family:'JetBrains Mono',monospace;font-size:0.9em;padding:0.2em 0.4em;border-radius:6px;}
+.dark .post-content code{background:rgba(255,255,255,0.08);}
+html:not(.dark) .post-content code{background:rgba(0,0,0,0.06);}
+</style>
+</head>
+<body class="antialiased">
+<div id="mouse-glow"></div>
+<div id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="ph-bold ph-arrow-up text-xl"></i></div>
+
+<div id="scroll-progress" class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-violet-600 to-blue-500 z-[100] transition-all duration-150" style="width:0%"></div>
+
+<header class="fixed top-0 left-0 w-full z-50 border-b border-transparent dark:border-white/5 bg-white/20 dark:bg-[#050507]/20 backdrop-blur-2xl transition-all duration-300" id="mainHeader">
+<nav class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+<a href="../index.html" class="flex items-center gap-3 font-bold text-xl">
+<img src="../Codify%20logo%20cabeçalho.png" alt="Codify" class="h-10 w-auto">
+<span class="gradient-text">Codify</span>
+</a>
+<div class="hidden md:flex items-center gap-8 text-sm text-slate-900 dark:text-zinc-400">
+<a href="../index.html#features" class="hover:text-slate-900 dark:hover:text-white transition">Features</a>
+<a href="../index.html#ide" class="hover:text-slate-900 dark:hover:text-white transition">IDE</a>
+<a href="../index.html#ai" class="hover:text-slate-900 dark:hover:text-white transition">Neuria AI</a>
+<a href="../index.html#downloads" class="hover:text-slate-900 dark:hover:text-white transition">Downloads</a>
+<a href="../index.html#blog" class="hover:text-slate-900 dark:hover:text-white transition">Blog</a>
+<a href="../novidades.html" class="hover:text-slate-900 dark:hover:text-white transition">Novidades</a>
+<button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-zinc-800 transition-colors text-slate-900 dark:text-zinc-400" aria-label="Toggle Theme">
+  <i class="ph-bold ph-moon text-lg dark:hidden block"></i>
+  <i class="ph-bold ph-sun text-lg hidden dark:block"></i>
+</button>
+</div>
+<div class="flex md:hidden items-center gap-3">
+<button id="theme-toggle-mobile" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-zinc-800 transition-colors text-slate-900 dark:text-zinc-400" aria-label="Toggle Theme">
+  <i class="ph-bold ph-moon text-lg dark:hidden block"></i>
+  <i class="ph-bold ph-sun text-lg hidden dark:block"></i>
+</button>
+<button id="menu-toggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-zinc-800 transition-colors text-slate-600 dark:text-zinc-400" aria-label="Menu">
+  <i class="ph-bold ph-list text-2xl" id="menu-icon"></i>
+</button>
+</div>
+</nav>
+<div id="mobile-menu" class="md:hidden fixed inset-x-0 top-16 border-b border-transparent dark:border-white/5 bg-white/30 dark:bg-[#050507]/30 backdrop-blur-2xl transition-all duration-300 overflow-hidden" style="max-height:0;opacity:0;">
+<div class="px-6 py-6 flex flex-col gap-5 text-base font-medium">
+<a href="../index.html#features" class="text-slate-900 dark:text-zinc-300 hover:text-violet-500 transition mobile-link">Features</a>
+<a href="../index.html#ide" class="text-slate-900 dark:text-zinc-300 hover:text-violet-500 transition mobile-link">IDE</a>
+<a href="../index.html#ai" class="text-slate-900 dark:text-zinc-300 hover:text-violet-500 transition mobile-link">Neuria AI</a>
+<a href="../index.html#downloads" class="text-slate-900 dark:text-zinc-300 hover:text-violet-500 transition mobile-link">Downloads</a>
+<a href="../index.html#blog" class="text-slate-900 dark:text-zinc-300 hover:text-violet-500 transition mobile-link">Blog</a>
+<a href="../novidades.html" class="text-slate-900 dark:text-zinc-300 hover:text-violet-500 transition mobile-link">Novidades</a>
+</div>
+</div>
+</header>
+
+<main>
+<article>
+<section class="pt-36 pb-16">
+<div class="max-w-3xl mx-auto px-6 reveal">
+<a href="../index.html" class="inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 transition mb-8"><i class="ph-bold ph-arrow-left"></i> Voltar à página original</a>
+<div class="flex items-center gap-3 mb-4">
+<span class="px-3 py-1 text-xs font-bold rounded-full bg-emerald-600/20 text-emerald-400 border border-emerald-600/30">Open Source</span>
+<span class="text-xs text-zinc-500">5 Jun 2026 · 3 min</span>
+</div>
+<h1 class="text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">Codify é agora Open Source</h1>
+<p class="text-lg text-zinc-500">Código disponível no GitHub sob licença MIT. Contribuições são bem-vindas!</p>
+</div>
+</section>
+
+<section class="pb-32">
+<div class="max-w-3xl mx-auto px-6">
+<div class="rounded-2xl overflow-hidden mb-12">
+<img src="https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?q=80&w=1600&auto=format&fit=crop" alt="Open Source" class="w-full h-[400px] object-cover">
+</div>
+<div class="post-content text-slate-900 dark:text-white">
+<p>É com grande entusiasmo que anunciamos que o <strong>Codify é agora Open Source</strong>! O código fonte está disponível no <a href="https://github.com/devilwolfpt/codify-ide" class="text-violet-400 hover:text-violet-300 transition">GitHub</a> sob a licença MIT, permitindo que qualquer pessoa use, modifique e contribua para o projeto.</p>
+
+<h2>Porquê Open Source?</h2>
+<p>A decisão de abrir o código do Codify foi tomada por várias razões:</p>
+<ul>
+<li><strong>Transparência</strong> — os utilizadores podem ver exatamente como o IDE funciona, como os dados são processados e como a IA opera localmente</li>
+<li><strong>Comunidade</strong> — acreditamos que uma comunidade ativa torna o produto melhor para todos</li>
+<li><strong>Inovação</strong> — desenvolvedores de todo o mundo podem contribuir com ideias, correções e funcionalidades</li>
+<li><strong>Segurança</strong> — código aberto permite auditoria independente e identificação rápida de vulnerabilidades</li>
+<li><strong>Educação</strong> — o Codify pode ser usado como recurso de aprendizagem para quem quer perceber como um IDE moderno é construído</li>
+</ul>
+
+<h2>O que está incluído</h2>
+<p>O repositório no GitHub inclui:</p>
+<ul>
+<li><strong>Core do editor</strong> — motor de rendering, gestão de buffers, syntax highlighting</li>
+<li><strong>Neuria AI</strong> — motor de IA local com suporte a múltiplos modelos</li>
+<li><strong>Interface do utilizador</strong> — toda a UI construída com componentes modernos</li>
+<li><strong>Sistema de extensões</strong> — API para criar e publicar extensões</li>
+<li><strong>Terminal integrado</strong> — emulador de terminal completo</li>
+<li><strong>Suporte Git</strong> — interface visual para controlo de versões</li>
+<li><strong>Build scripts</strong> — scripts para compilar o Codify em Windows, macOS e Linux</li>
+</ul>
+
+<h2>Licença MIT</h2>
+<p>Escolhemos a licença MIT por ser a mais permissiva e amigável para a comunidade. Podes:</p>
+<ul>
+<li>Usar o Codify para qualquer fim, incluindo comercial</li>
+<li>Modificar o código e distribuir as tuas próprias versões</li>
+<li>Incorporar partes do Codify nos teus projetos</li>
+<li>Criar forks e explorar direções diferentes</li>
+</ul>
+<p>A única exigência é manter o aviso de copyright e a licença nas tuas distribuições.</p>
+
+<h2>Como Contribuir</h2>
+<p>Se queres contribuir para o Codify, aqui estão algumas formas de o fazer:</p>
+<ul>
+<li><strong>Reporta bugs</strong> — abre uma issue no GitHub com uma descrição clara do problema</li>
+<li><strong>Sugere funcionalidades</strong> — usa o GitHub Discussions para propor novas ideias</li>
+<li><strong>Submete PRs</strong> — corrige bugs, melhora a documentação ou adiciona funcionalidades</li>
+<li><strong>Traduções</strong> — ajuda a traduzir o Codify para mais idiomas</li>
+<li><strong>Extensões</strong> — cria e publica extensões no marketplace</li>
+</ul>
+
+<h2>O Futuro</h2>
+<p>Esta é apenas a primeira etapa. Com a comunidade envolvida, planeamos acelerar o desenvolvimento e trazer funcionalidades ainda mais ambiciosas. O Codify continuará a ser gratuito e open source, com uma versão enterprise opcional para equipas que necessitem de suporte dedicado.</p>
+<p>Visita o nosso <a href="https://github.com/devilwolfpt/codify-ide" class="text-violet-400 hover:text-violet-300 transition">repositório no GitHub</a> para explorar o código, contribuir ou simplesmente deixar uma estrela. Toda a ajuda é bem-vinda!</p>
+</div>
+
+<div class="mt-16 pt-8 border-t border-slate-200 dark:border-zinc-800">
+<a href="../index.html" class="inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 transition"><i class="ph-bold ph-arrow-left"></i> Voltar à página original</a>
+</div>
+</div>
+</section>
+</article>
+</main>
+
+<footer class="border-t border-slate-200 dark:border-zinc-900 pt-16 pb-10">
+<div class="max-w-7xl mx-auto px-6">
+<div class="grid md:grid-cols-4 gap-12 mb-12">
+<div>
+<div class="flex items-center gap-3 font-bold text-xl mb-4">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-blue-500 flex items-center justify-center"><i class="ph-fill ph-code text-white text-lg"></i></div>
+<span class="gradient-text">Codify</span>
+</div>
+<p class="text-sm text-zinc-500 leading-relaxed">O IDE criado para agentes de IA.</p>
+</div>
+<div>
+<h4 class="font-bold mb-4 text-slate-900 dark:text-white">Produto</h4>
+<ul class="space-y-2 text-sm text-zinc-500">
+<li><a href="../index.html#features" class="hover:text-violet-400 transition">Features</a></li>
+<li><a href="../index.html#downloads" class="hover:text-violet-400 transition">Downloads</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-4 text-slate-900 dark:text-white">Recursos</h4>
+<ul class="space-y-2 text-sm text-zinc-500">
+<li><a href="../index.html" class="hover:text-violet-400 transition">Página original</a></li>
+<li><a href="../novidades.html" class="hover:text-violet-400 transition">Novidades</a></li>
+<li><a href="https://github.com/devilwolfpt/codify-ide" class="hover:text-violet-400 transition">GitHub</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-4 text-slate-900 dark:text-white">Legal</h4>
+<ul class="space-y-2 text-sm text-zinc-500">
+<li><a href="#" class="hover:text-violet-400 transition">Privacidade</a></li>
+<li><a href="#" class="hover:text-violet-400 transition">Termos</a></li>
+</ul>
+</div>
+</div>
+<div class="border-t border-slate-200 dark:border-zinc-900 pt-8 text-center text-sm text-zinc-500">&copy; 2026 Codify &mdash; Feito por <span class="text-violet-400">Devilwolf</span></div>
+</div>
+</footer>
+
+<script>
+(function() {
+  const glow = document.getElementById('mouse-glow');
+  if (!glow) return;
+  let raf = null;
+  document.addEventListener('mousemove', function(e) {
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(function() {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+      glow.style.opacity = '1';
+    });
+  });
+  document.addEventListener('mouseleave', function() { glow.style.opacity = '0'; });
+})();
+
+(function() {
+  const progress = document.getElementById('scroll-progress');
+  const backBtn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function() {
+    var scrollTop = window.scrollY || window.pageYOffset;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = (scrollTop / docHeight) * 100;
+    if (progress) progress.style.width = pct + '%';
+    if (backBtn) backBtn.classList.toggle('visible', scrollTop > 600);
+  });
+})();
+
+(function() {
+  const menuBtn = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const icon = document.getElementById('menu-icon');
+  if (!menuBtn || !menu) return;
+  menuBtn.addEventListener('click', function() {
+    var open = menu.style.maxHeight !== '0px' && menu.style.maxHeight !== '';
+    if (open) {
+      menu.style.maxHeight = '0';
+      menu.style.opacity = '0';
+      if (icon) icon.className = 'ph-bold ph-list text-2xl';
+    } else {
+      menu.style.maxHeight = menu.scrollHeight + 'px';
+      menu.style.opacity = '1';
+      if (icon) icon.className = 'ph-bold ph-x text-2xl';
+    }
+  });
+  document.querySelectorAll('.mobile-link').forEach(function(link) {
+    link.addEventListener('click', function() {
+      menu.style.maxHeight = '0';
+      menu.style.opacity = '0';
+      if (icon) icon.className = 'ph-bold ph-list text-2xl';
+    });
+  });
+})();
+
+function toggleTheme() {
+  document.documentElement.classList.toggle('dark');
+  localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+}
+var themeBtns = document.querySelectorAll('#theme-toggle, #theme-toggle-mobile');
+themeBtns.forEach(function(btn) {
+  btn.addEventListener('click', toggleTheme);
+});
+
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) entry.target.classList.add('active');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+</script>
+</body>
+</html>
